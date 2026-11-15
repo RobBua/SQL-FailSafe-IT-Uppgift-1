@@ -1,14 +1,15 @@
-Normalisering (1NF–3NF)
+Normalisering (1NF-3NF)
 
-1NF: Alla kolumner innehåller atomära värden, till exempel ett telefonnummer per kund och en specialitet per konsult. Det finns inga upprepade kolumngrupper (som Konsult1, Konsult2) eftersom flera konsulter hanteras som flera rader i Uppdrag. Varje tabell har en primärnyckel.
+1NF: Varje kolumn i mina tabeller innehåller bara ett värde. Till exempel har en kund ett telefonnummer och en konsult en specialitet. Om en kund hyr flera konsulter lägger jag in flera rader i tabellen Uppdrag. Jag har alltså inga listor i samma ruta. Varje tabell har också en primärnyckel.
 
-2NF: Alla tabeller har enkla surrogatnycklar (KundID, KonsultID, UppdragID och så vidare), så det finns inga partiella beroenden. Varje icke-nyckelattribut beror på hela primärnyckeln. Uppdragets egna uppgifter (datum, rollbeskrivning) ligger i Uppdrag och inte hos kund eller konsult.
+2NF: Alla mina tabeller har en enkel primärnyckel, till exempel KundID och KonsultID, som är ett ensamt ID-nummer. Därför kan ingen kolumn bero på bara en del av nyckeln. Allt i tabellen beror på hela nyckeln. Informationen om uppdraget, som datum och roll, ligger i Uppdrag och inte hos kunden eller konsulten.
 
-3NF: Det finns inga transitiva beroenden, eftersom inga icke-nyckelattribut bestäms av andra icke-nyckelattribut. Kundens uppgifter lagras bara i Kund och konsultens bara i Konsult. Uppdrag lagrar enbart KundID och KonsultID, inte företagsnamn eller timpris. Specialiteten ligger i en egen tabell, så texten inte upprepas och inte kan stavas olika på olika rader. Organisationsnummer och personnummer är UNIQUE men är inte PK, så de kan inte ge upphov till inkonsekvens.
+3NF: I mina tabeller beror ingen kolumn på en annan kolumn som inte är nyckel. Kundens information finns bara i Kund och konsultens bara i Konsult. I Uppdrag sparar jag bara KundID och KonsultID, så jag skriver inte företagsnamnet eller timpriset flera gånger. Specialiteten ligger i en egen tabell, Specialitet. Då skrivs namnet bara en gång och kan inte stavas på olika sätt. Därför uppfyller databasen 3NF.
 
 ============================================================================================
+
 DevSecOps-reflektion
 
-Sec: Jag använder parametriserade frågor (prepared statements) eller en ORM, så att användarinmatning aldrig slås ihop med SQL-texten. Då tolkas inmatningen alltid som data och aldrig som kod. Dessutom ger jag applikationens databasanvändare minsta möjliga behörighet (till exempel inte DROP eller DELETE där det inte behövs) och validerar inmatningen.
+Sec: För att skydda mot SQL injection ska man använda parametriserade frågor (prepared statements). Då behandlas det användaren skriver som vanlig text och aldrig som SQL-kod, så en angripare kan inte radera databasen med sitt inmatningsfält.
 
-Ops: Jag lägger ett index på kolumnen Organisationsnummer, och UNIQUE-villkoret ger redan ett unikt index. Då använder SQL Server en snabb index-seek (B-träd) i stället för att läsa igenom hela tabellen. På mycket stora tabeller som Uppdrag kan man även överväga partitionering.
+Ops: Jag skulle lägga ett index på kolumnen Organisationsnummer. Då kan databasen hitta rätt kund direkt i stället för att leta igenom alla rader, vilket gör sökningarna snabba även när det finns tusentals kunder.
