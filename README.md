@@ -6,7 +6,7 @@ Normalisering (1NF–3NF)
 
 3NF: Det finns inga transitiva beroenden, eftersom inga icke-nyckelattribut bestäms av andra icke-nyckelattribut. Kundens uppgifter lagras bara i Kund och konsultens bara i Konsult. Uppdrag lagrar enbart KundID och KonsultID, inte företagsnamn eller timpris. Specialiteten ligger i en egen tabell, så texten inte upprepas och inte kan stavas olika på olika rader. Organisationsnummer och personnummer är UNIQUE men är inte PK, så de kan inte ge upphov till inkonsekvens.
 
-=============================================================================================================================================================================================================================================================================================================================
+============================================================================================
 DevSecOps-reflektion
 
 Sec: Jag använder parametriserade frågor (prepared statements) eller en ORM, så att användarinmatning aldrig slås ihop med SQL-texten. Då tolkas inmatningen alltid som data och aldrig som kod. Dessutom ger jag applikationens databasanvändare minsta möjliga behörighet (till exempel inte DROP eller DELETE där det inte behövs) och validerar inmatningen.
